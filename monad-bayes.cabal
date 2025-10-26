@@ -36,10 +36,15 @@ flag dev
   default:     False
   manual:      True
 
-common deps
+flag tui
+  description: Turn on tui tools.
+  default:     False
+  manual:      True
+
+
+common deps-without-tui
   build-depends:
     , base             >=4.15     && <4.22
-    , brick            ^>=2.10
     , containers       >=0.6      && <0.8
     , foldl            ^>=1.4
     , free             ^>=5.2
@@ -68,6 +73,11 @@ common deps
     , vty              >=6.4      && <6.6
     , vty-unix         ^>=0.2.0.0
 
+common deps
+  import deps-without-tui
+  if flag(tui)
+    build-depends: brick  ^>=2.10
+
 common test-deps
   build-depends:
     , abstract-par          ^>=0.3
@@ -84,8 +94,7 @@ common test-deps
   autogen-modules: Paths_monad_bayes
   other-modules:   Paths_monad_bayes
 
-library
-  import:             deps
+common lib-expose:
   exposed-modules:
     Control.Monad.Bayes.Class
     Control.Monad.Bayes.Density.Free
@@ -110,6 +119,11 @@ library
     Control.Monad.Bayes.Traced.Static
     Control.Monad.Bayes.Weighted
     Math.Integrators.StormerVerlet
+
+library
+  import:             deps, lib-expose
+  if flag(tui)
+    exposed-modules: Control.Monad.Bayes.Inference.TUI
 
   hs-source-dirs:     src
   other-modules:      Control.Monad.Bayes.Traced.Common
