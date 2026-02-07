@@ -70,8 +70,8 @@ common deps-without-tui
     , text             >=1.2      && <2.2
     , transformers     >=0.5.6    && <0.7
     , vector           >=0.12.0   && <0.14
-    , vty              >=6.4      && <6.6
-    , vty-unix         ^>=0.2.0.0
+    -- , vty              >=6.4      && <6.6
+    -- , vty-unix         ^>=0.2.0.0
 
 common deps
   import deps-without-tui
