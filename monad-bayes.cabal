@@ -36,13 +36,8 @@ flag dev
   default:     False
   manual:      True
 
-flag tui
-  description: Turn on tui tools.
-  default:     False
-  manual:      True
 
-
-common deps-without-tui
+common deps
   build-depends:
     , base             >=4.15     && <4.22
     , containers       >=0.6      && <0.8
@@ -70,13 +65,6 @@ common deps-without-tui
     , text             >=1.2      && <2.2
     , transformers     >=0.5.6    && <0.7
     , vector           >=0.12.0   && <0.14
-    -- , vty              >=6.4      && <6.6
-    -- , vty-unix         ^>=0.2.0.0
-
-common deps
-  import deps-without-tui
-  if flag(tui)
-    build-depends: brick  ^>=2.10
 
 common test-deps
   build-depends:
@@ -94,7 +82,20 @@ common test-deps
   autogen-modules: Paths_monad_bayes
   other-modules:   Paths_monad_bayes
 
-common lib-expose:
+library
+  import:             deps
+
+  hs-source-dirs:     src
+  other-modules:      Control.Monad.Bayes.Traced.Common
+  default-language:   Haskell2010
+  default-extensions:
+    BlockArguments
+    FlexibleContexts
+    ImportQualifiedPost
+    LambdaCase
+    OverloadedStrings
+    TupleSections
+
   exposed-modules:
     Control.Monad.Bayes.Class
     Control.Monad.Bayes.Density.Free
@@ -107,7 +108,6 @@ common lib-expose:
     Control.Monad.Bayes.Inference.RMSMC
     Control.Monad.Bayes.Inference.SMC
     Control.Monad.Bayes.Inference.SMC2
-    Control.Monad.Bayes.Inference.TUI
     Control.Monad.Bayes.Integrator
     Control.Monad.Bayes.Population
     Control.Monad.Bayes.Sampler.Lazy
@@ -119,22 +119,6 @@ common lib-expose:
     Control.Monad.Bayes.Traced.Static
     Control.Monad.Bayes.Weighted
     Math.Integrators.StormerVerlet
-
-library
-  import:             deps, lib-expose
-  if flag(tui)
-    exposed-modules: Control.Monad.Bayes.Inference.TUI
-
-  hs-source-dirs:     src
-  other-modules:      Control.Monad.Bayes.Traced.Common
-  default-language:   Haskell2010
-  default-extensions:
-    BlockArguments
-    FlexibleContexts
-    ImportQualifiedPost
-    LambdaCase
-    OverloadedStrings
-    TupleSections
 
   if flag(dev)
     ghc-options:
